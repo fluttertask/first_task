@@ -1,13 +1,16 @@
-const express = require('express')
-const ProductFunctions = require('../Functions/Product')
+const express = require('express');
+const multer  = require('multer');
+
+const upload = multer({ dest: 'Public/Uploads/' });
+const ProductFunctions = require('../Functions/Product');
 
 const router = express.Router();
 
 router.get('/getProduct', ProductFunctions.getProduct);
 
-router.post('/addProduct', ProductFunctions.addProduct)
+router.post('/addProduct',upload.single('image'), ProductFunctions.addProduct);
 
-router.post('/updateProduct', ProductFunctions.updateProduct);
+router.post('/updateProduct',upload.single('image'), ProductFunctions.updateProduct);
 
 
 module.exports = router;

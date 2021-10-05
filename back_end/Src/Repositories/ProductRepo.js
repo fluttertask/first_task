@@ -11,10 +11,11 @@ class ProductRepo {
 		)
 	}
 
-	async addProduct(next) {
-		const { doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number } = data
+	async addProduct(data, next) {
+		const {image_url, doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number, active} = data
 
 		var product = ProductsModel({
+			image_url: image_url,
 			doors: doors,
 			color: color,
 			type: type,
@@ -22,7 +23,8 @@ class ProductRepo {
 			make: make,
 			model: model,
 			manufacturing_year: manufacturing_year,
-			plate_number: plate_number
+			plate_number: plate_number,
+			active: active
 		});
 		product.save()
 			.then((result)=>{
@@ -34,12 +36,13 @@ class ProductRepo {
 	}
 
 	async updateProduct(data, next) {
-		const { doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number, active } = data;
+		const { image_url, doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number, active } = data;
 
 		await Products.findOneAndUpdate(
 			{ name: data.name },
 			{
 				$set: {
+					image_url: image_url,
 					doors: doors,
 					color: color,
 					type: type,

@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:math';
+import 'package:dio/dio.dart';
+import 'package:flutter_task/Src/Constants/uri.dart';
 
 class Product {
   Product({
@@ -18,7 +21,7 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      imageUrl: map['imageUrl'] as String,
+      imageUrl: CustomUrl().imageUrl(map['image_url'] as String),
       doors: map['doors'] as String,
       color: map['color'] as String,
       type: map['type'] as String,
@@ -32,9 +35,8 @@ class Product {
     );
   }
 
-  String toJson() => json.encode(toMap());
+  // String toJson() => json.encode(toMap());
 
-  // ignore: sort_constructors_first
   factory Product.fromJson(String source) => Product.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
@@ -43,48 +45,67 @@ class Product {
   }
 
 
-  Product copyWith({
-    String? imageUrl,
-    String? doors,
-    String? color,
-    String? type,
-    int? passengerCapacity,
-    String? owner,
-    String? make,
-    String? model,
-    String? manufacturingYear,
-    String? plateNumber,
-    bool? active,
-  }) {
-    return Product(
-      imageUrl: imageUrl ?? this.imageUrl,
-      doors: doors ?? this.doors,
-      color: color ?? this.color,
-      type: type ?? this.type,
-      passengerCapacity: passengerCapacity ?? this.passengerCapacity,
-      owner: owner ?? this.owner,
-      make: make ?? this.make,
-      model: model ?? this.model,
-      manufacturingYear: manufacturingYear ?? this.manufacturingYear,
-      plateNumber: plateNumber ?? this.plateNumber,
-      active: active ?? this.active,
-    );
-  }
+  // Product copyWith({
+  //   String? imageUrl,
+  //   String? doors,
+  //   String? color,
+  //   String? type,
+  //   int? passengerCapacity,
+  //   String? owner,
+  //   String? make,
+  //   String? model,
+  //   String? manufacturingYear,
+  //   String? plateNumber,
+  //   bool? active,
+  // }) {
+  //   return Product(
+  //     imageUrl: imageUrl ?? this.imageUrl,
+  //     doors: doors ?? this.doors,
+  //     color: color ?? this.color,
+  //     type: type ?? this.type,
+  //     passengerCapacity: passengerCapacity ?? this.passengerCapacity,
+  //     owner: owner ?? this.owner,
+  //     make: make ?? this.make,
+  //     model: model ?? this.model,
+  //     manufacturingYear: manufacturingYear ?? this.manufacturingYear,
+  //     plateNumber: plateNumber ?? this.plateNumber,
+  //     active: active ?? this.active,
+  //   );
+  // }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'imageUrl': imageUrl,
-      'doors': doors,
-      'color': color,
-      'type': type,
-      'passengerCapacity': passengerCapacity,
-      'owner': owner,
-      'make': make,
-      'model': model,
-      'manufacturingYear': manufacturingYear,
-      'plateNumber': plateNumber,
-      'active': active,
-    };
+  // Map<String, dynamic> toMap() {
+  //   return {
+  //     'imageUrl': imageUrl,
+  //     'doors': doors,
+  //     'color': color,
+  //     'type': type,
+  //     'passengerCapacity': passengerCapacity,
+  //     'owner': owner,
+  //     'make': make,
+  //     'model': model,
+  //     'manufacturingYear': manufacturingYear,
+  //     'plateNumber': plateNumber,
+  //     'active': active,
+  //   };
+  // }
+
+  Future<FormData> toForm() async {
+    final Random rnd = Random();
+
+    final FormData formData = FormData.fromMap({
+        'doors': doors,
+        'color': color,
+        'type': type,
+        'passengerCapacity': passengerCapacity,
+        'owner': owner,
+        'make': make,
+        'model': model,
+        'manufacturingYear': manufacturingYear,
+        'plateNumber': plateNumber,
+        'active': active,
+        'image': await MultipartFile.fromFile(imageUrl, filename: 'file_${rnd.nextInt(100000)}'),
+      });
+    return formData;
   }
 
 

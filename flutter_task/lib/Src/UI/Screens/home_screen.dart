@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: Size(MediaQuery.of(context).size.width, 150),
         child: CustomAppBar(
@@ -39,20 +40,26 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             height: 50,
             child: TabBar(
               controller: _tabController,
-              tabs: const [
+              tabs: [
                 Tab(
-                  child: Text(
-                    'Motorbikes',
-                    style: TextStyle(
-                      fontSize: 20,
+                  child: Center(
+                    child: Text(
+                      'Motorbikes',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 20,
+                      ),
                     ),
                   )
                 ),
                 Tab(
-                  child: Text(
-                    'Vehicles',
-                    style: TextStyle(
-                      fontSize: 20,
+                  child: Center(
+                    child: Text(
+                      'Vehicles',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 20,
+                      ),
                     ),
                   )
                 ),
@@ -95,15 +102,17 @@ class _VeheclesTabsState extends State<_VeheclesTabs> with TickerProviderStateMi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: Size(MediaQuery.of(context).size.width, 50),
         child: TabBar(
           controller: _tabController,
-          tabs: const [
+          tabs: [
             Tab(
               child: Text(
                 'Add new',
                 style: TextStyle(
+                  color: Theme.of(context).primaryColor,
                   fontSize: 18,
                 ),
               )
@@ -112,6 +121,7 @@ class _VeheclesTabsState extends State<_VeheclesTabs> with TickerProviderStateMi
               child: Text(
                 'Active',
                 style: TextStyle(
+                  color: Theme.of(context).primaryColor,
                   fontSize: 18,
                 ),
               )
@@ -120,6 +130,7 @@ class _VeheclesTabsState extends State<_VeheclesTabs> with TickerProviderStateMi
               child: Text(
                 'Inactive',
                 style: TextStyle(
+                  color: Theme.of(context).primaryColor,
                   fontSize: 18,
                 ),
               )
@@ -155,10 +166,11 @@ class _VehiclesStateState extends State<_VehiclesState> {
       child: BlocBuilder<ProductCubit, ProductState>(
         builder: (context, state){
           if (state.product == null || state.product!.isEmpty){
-            return const Center(
+            return Center(
               child: Text(
                 'Empty List',
                 style: TextStyle(
+                  color: Theme.of(context).primaryColor,
                   fontSize: 18,
                 ),),
             );
@@ -218,56 +230,71 @@ class _VehiclesCreateState extends State<VehiclesCreate> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(40),
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.2),
-          width: 1,
-        ),
-      ),
-      child: Container(
-        color: Colors.white,
-        width: size.width - 20,
-        padding: const EdgeInsets.all(10),
-        height: 700,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const CarBox(),
-                Column(
-                  children: [
-                    CustomTextField(textEditingController: _doorsCT),
-                    CustomTextField(textEditingController: _colorCT),
-                    CustomTextField(textEditingController: _typeCT)
-                  ],
-                )
-              ],
-            ),
-            Row(
-              children: [
-                CustomTextField(textEditingController: _passengerCapacityCT),
-                CustomTextField(textEditingController: _ownerCT)
-              ],
-            ),
-            CustomTextField(textEditingController: _makeCT),
-            CustomTextField(textEditingController: _modelCT),
-            CustomTextField(textEditingController: _yearCT),
-            CustomTextField(textEditingController: _plateNumberCT),
-            const SizedBox(height: 10,),
-            FloatingActionButton.extended(
-              label: const Text(
-                'Submit',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body : SingleChildScrollView(
+        child: Container(
+          width: size.width - 20,
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(5),
+          height: 700,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: (size.width/2) - 20,
+                    child: const CarBox()
+                  ),
+                  SizedBox(
+                    width: (size.width/2 )- 20,
+                    child: Column(
+                      children: [
+                        CustomTextField(textEditingController: _doorsCT, hintText: 'Doors'),
+                        CustomTextField(textEditingController: _colorCT, hintText: 'Color'),
+                        CustomTextField(textEditingController: _typeCT, hintText: 'Type')
+                      ],
+                    ),
+                  )
+                ],
               ),
-              onPressed: _submitData
-            )
-          ],
+              Row(
+                children: [
+                  SizedBox(
+                    width: (size.width/2 )- 20,
+                    child: CustomTextField(textEditingController: _passengerCapacityCT, hintText: 'Passenger capacity')
+                  ),
+                  SizedBox(
+                    width: (size.width/2 )- 20,
+                    child: CustomTextField(textEditingController: _ownerCT, hintText: 'Private or Taxi')
+                  )
+                ],
+              ),
+              CustomTextField(textEditingController: _makeCT, hintText: 'Make'),
+              CustomTextField(textEditingController: _modelCT, hintText: 'Model'),
+              CustomTextField(textEditingController: _yearCT, hintText: 'Manufacturing year'),
+              CustomTextField(textEditingController: _plateNumberCT, hintText: 'Plate number'),
+              const SizedBox(height: 10,),
+              FloatingActionButton.extended(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                focusColor: Colors.white,
+                label: const Text(
+                  'Submit',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onPressed: _submitData
+              )
+            ],
+          ),
         ),
       ),
     );

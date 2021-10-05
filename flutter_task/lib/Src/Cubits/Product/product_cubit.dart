@@ -15,9 +15,10 @@ class ProductCubit extends Cubit<ProductState> {
   late Dio dio;
 
   Future addProduct(Product product) async {
+    final FormData productForm = await product.toForm();
     dio.post(
       CustomUrl().addProduct,
-      data: product.toJson()
+      data: productForm
       ).then(
       (response) {
         final List<Map<String, dynamic>> data = json.decode(response.data as String) as List<Map<String, dynamic>>;
@@ -32,8 +33,13 @@ class ProductCubit extends Cubit<ProductState> {
     );
   }
 
-  Future getProduct() async {
-    dio.get(CustomUrl().getProduct).then(
+  Future updateProduct(Product product) async {
+    final FormData productForm = await product.toForm();
+
+    dio.post(
+      CustomUrl().updateProduct,
+      data: productForm
+      ).then(
       (response) {
         final List<Map<String, dynamic>> data = json.decode(response.data as String) as List<Map<String, dynamic>>;
         final List<Product> products = data.map((e) => Product.fromMap(json.decode(response.data as String) as Map<String, dynamic>)).toList();
@@ -45,5 +51,30 @@ class ProductCubit extends Cubit<ProductState> {
         return emit(ProductState(state: false, product: null));
       }
     );
+  }
+
+  Future checkNetwork() async {
+    dio.get(CustomUrl().networkTest).asStream().asBroadcastStream().listen(
+      (event) { }
+    ).onError(
+      (err) { }
+    );
+  }
+
+  Future getProduct() async {
+    dio.get(CustomUrl().getProduct).then(
+      (response) {
+        final List<Map<String, dynamic>> data = json.decode(response.data as String) as List<Map<String, dynamic>>;
+        final List<Product> products = data.map((e) => Product.fromMap(json.decode(response.data as String) as Map<String, dynamic>)).toList();
+        return emit(ProductState(state: true, product: products));
+      }
+    ).catchError(
+      (err) {
+        return emit(ProductState(state: false, product: null));
+      }
+    ).onError(
+      (error, stackTrace) {
+        return emit(ProductState(state: false, product: null));
+      });
   }
 }

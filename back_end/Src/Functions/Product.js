@@ -6,17 +6,18 @@ const ProductFunctions = {
 
 		await ProductRepo.getProduct((err, product)=>{
 			if (err){
-				return res.json({ error: error, success: null })
+				return res.json({ error: error, success: null });
 			}
-			return res.json({ error: null, success: products })
+			return res.json({ error: null, success: products });
 		});
 	},
 
 	addProduct: async (req, res) => {
 		try {
-			const { doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number, active } = req.body
+			const { doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number, active } = req.body;
 
 			const data = {
+				image_url: res.file.name,
 				doors: doors,
 				color: color,
 				type: type,
@@ -24,7 +25,8 @@ const ProductFunctions = {
 				make: make,
 				model: model,
 				manufacturing_year: manufacturing_year,
-				plate_number: plate_number
+				plate_number: plate_number,
+				active: true
 			}
 
 			await ProductRepo.addProduct(data, (err, product) => {
@@ -41,9 +43,10 @@ const ProductFunctions = {
 
 	updateProduct: async (req, res) => {
 		try {
-			const { doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number } = req.body
+			const { doors, color, type, passenger_capacity, make, model, manufacturing_year, plate_number } = req.body;
 
 			const data = {
+				image_url: res.file.path,
 				doors: doors,
 				color: color,
 				type: type,
@@ -53,7 +56,12 @@ const ProductFunctions = {
 				plate_number: plate_number
 			}
 
-			await ProductRepo.updateProduct(data);
+			await ProductRepo.updateProduct(data, (err, product) => {
+				if (err)
+				return res.json({ error: error, success: null });
+				else
+				return res.json({ error: null, success: product });
+			});
 
 			return res.json({ error: null, success: true })
 		} catch (error) {
